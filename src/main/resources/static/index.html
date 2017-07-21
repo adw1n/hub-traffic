@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>hub traffic</title>
+    <!-- Plotly.js -->
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+<body>
+<!--<a href="https://github.com/adw1n/hub-traffic"><img style="position: absolute; top: 0; left: 0; border: 0;" src="https://camo.githubusercontent.com/567c3a48d796e2fc06ea80409cc9dd82bf714434/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f6c6566745f6461726b626c75655f3132313632312e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_left_darkblue_121621.png"></a>-->
+Track your Github traffic
+
+
+Ready to start? <a href="/login"><button>login (you will be redirected to GitHub)</button></a>
+
+
+Logged in as <div id="user-name">None</div>
+
+DEMO
+JohnDoe
+Pinned repositories:
+<div id="Repo1-visits"></div>
+<div id="Repo1-clones"></div>
+<script
+        src="https://code.jquery.com/jquery-3.2.1.js"
+        integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE="
+        crossorigin="anonymous"></script>
+<script>
+    $.get( "/user", function( data ) {
+        console.log(data);
+    });
+</script>
+<script>
+
+    var visits = {
+        x: ["7/11", "7/12", "7/13", "7/14"],
+        y: [12, 9, 15, 12],
+        mode: 'lines+markers',
+        marker: {
+            color: 'blue',
+            size: 8
+        },
+        line: {
+            color: 'blue',
+            width: 1
+        },
+        name: "visits"
+    };
+    var unique_visitors = {
+        x: ["7/11", "7/12", "7/13", "7/14"],
+        y: [2, 1, 4, 3],
+        mode: 'lines+markers',
+        marker: {
+            color: 'green',
+            size: 8
+        },
+        line: {
+            color: 'green',
+            width: 1
+        },
+        name: "unique visitors",
+        yaxis: 'y2'
+    };
+
+    var data = [ visits, unique_visitors];
+
+    var layout = {
+        title: 'Visitors',
+        yaxis: { //https://plot.ly/javascript/multiple-axes/
+            side: 'left',
+            color: 'green'
+        },
+        yaxis2: {
+            overlaying: 'y',
+            side: 'right',
+            color: 'blue'
+        },
+        width: "40%"
+    };
+
+    Plotly.newPlot('Repo1-visits', data, layout);
+    //TODO summary under the chart
+
+
+
+
+
+    var clones = {
+        x: ["7/11", "7/12", "7/13", "7/14"],
+        y: [0, 3, 0, 1],
+        mode: 'lines+markers',
+        marker: {
+            color: 'blue',
+            size: 8
+        },
+        line: {
+            color: 'blue',
+            width: 1
+        },
+        name: "visits"
+    };
+    var unique_cloners = {
+        x: ["7/11", "7/12", "7/13", "7/14"],
+        y: [0, 2, 0, 1],
+        mode: 'lines+markers',
+        marker: {
+            color: 'green',
+            size: 8
+        },
+        line: {
+            color: 'green',
+            width: 1
+        },
+        name: "unique visitors",
+        yaxis: 'y2'
+    };
+
+    var data = [ clones, unique_cloners];
+
+    var layout = {
+        title: 'Git clones',
+        yaxis: { //https://plot.ly/javascript/multiple-axes/
+            side: 'left',
+            color: 'green'
+        },
+        yaxis2: {
+            overlaying: 'y',
+            side: 'right',
+            color: 'blue'
+        },
+        width: "40%"
+    };
+
+    Plotly.newPlot('Repo1-clones', data, layout);
+
+</script>
+</body>
+</html>
