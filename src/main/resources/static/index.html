@@ -212,7 +212,7 @@
             color: 'blue',
             width: 1
         },
-        name: "visits"
+        name: "clones"
     };
     var unique_cloners = {
         x: ["7/11", "7/12", "7/13", "7/14"],
@@ -226,7 +226,7 @@
             color: 'green',
             width: 1
         },
-        name: "unique visitors",
+        name: "unique cloners",
         yaxis: 'y2'
     };
 
@@ -247,6 +247,11 @@
 
     Plotly.newPlot('Repo1-clones', data, layout);
     Plotly.newPlot('Repo2-clones', data, layout);
+    function getRepo(repoName) {
+        $.get("/api/repository/views/"+repoName, function (data) {
+            console.log(data);
+        })
+    }
 </script>
 
 

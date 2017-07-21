@@ -13,28 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.security.Principal;
 
 @SpringBootApplication
-@EnableOAuth2Sso
-@RestController
-public class HubTrafficApplication  extends WebSecurityConfigurerAdapter {
-    @RequestMapping("/user")
-    public Principal user(Principal principal) {
-        GithubAPI.fetchUpdates(principal);
-//        GithubUser user = GithubAPI.getUser(principal);
-        return principal;
-    }
-
-
-
-
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        // @formatter:off
-        http.antMatcher("/**").authorizeRequests().antMatchers("/", "/login**").permitAll().anyRequest()
-                .authenticated().and().logout().logoutSuccessUrl("/").permitAll().and().csrf()
-                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
-        // @formatter:on
-    }
-
+public class HubTrafficApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(HubTrafficApplication.class, args);
 	}

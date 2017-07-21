@@ -54,7 +54,7 @@ public class GithubAPI {
         List<GithubRepository> repositories = new ArrayList<>();
         for(Map.Entry<String, GHRepository> pair: github.getUser(user.getName()).getRepositories().entrySet()){
             String repoName = pair.getKey();
-            GithubRepository repo = githubRepositoryRepository.findByName(repoName);
+            GithubRepository repo = githubRepositoryRepository.findByNameAndUser(repoName, user);
             if(repo==null){
                 repo = new GithubRepository(repoName, user);
                 githubRepositoryRepository.save(repo);
@@ -69,7 +69,7 @@ public class GithubAPI {
     private static void getRepositoryTrafficStats(GithubUser user, String token, String repositoryName){
         String viewsURL = "https://api.github.com/repos/"+user.getName()+"/"+repositoryName+"/traffic/views?access_token="+token;
         String clonesURL = "https://api.github.com/repos/"+user.getName()+"/"+repositoryName+"/traffic/clones?access_token="+token;
-        GithubRepository repo = githubRepositoryRepository.findByName(repositoryName);
+        GithubRepository repo = githubRepositoryRepository.findByNameAndUser(repositoryName, user);
         GithubViewsResponse viewsResponse = restTemplate.getForObject(viewsURL, GithubViewsResponse.class);
         for(GithubRepositoryViews views: viewsResponse.getViews()){
             GithubRepositoryViews repoViews = githubRepositoryViewsRepository.findByRepositoryAndTimestamp(repo, views.getTimestamp());
@@ -83,8 +83,8 @@ public class GithubAPI {
         for(GithubRepositoryClones clones: clonesResponse.getClones()){
             GithubRepositoryClones repoClones = githubRepositoryClonesRepository.findByRepositoryAndTimestamp(repo, clones.getTimestamp());
             if(repoClones==null){
-                repoClones.setRepository(repo);
-                githubRepositoryClonesRepository.save(repoClones);
+                clones.setRepository(repo);
+                githubRepositoryClonesRepository.save(clones);
             }
         }
     }
