@@ -88,6 +88,10 @@
 			<artifactId>github-api</artifactId>
 			<version>1.86</version>
 		</dependency>
+		<dependency>
+			<groupId>org.thymeleaf.extras</groupId>
+			<artifactId>thymeleaf-extras-springsecurity4</artifactId>
+		</dependency>
 	</dependencies>
 
 	<dependencyManagement>
