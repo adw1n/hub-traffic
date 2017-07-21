@@ -100,64 +100,90 @@ class GitHubRepositoryChart extends React.Component{
     }
 }
 
-class DemoPage extends React.Component{
-    
+class LoginHeader extends React.Component{
+
+}
+
+class DemoExample extends React.Component{
+    constructor(props){
+        super(props);
+        this.audio_gallery_repo_visits = {
+            name: "hub-traffic",
+            views: [
+                {
+                    "timestamp": 1499558400000,
+                    "count": 3,
+                    "uniques": 1
+                },
+                {
+                    "timestamp": 1499644800000,
+                    "count": 3,
+                    "uniques": 1
+                },
+                {
+                    "timestamp": 1499904000000,
+                    "count": 4,
+                    "uniques": 1
+                },
+                {
+                    "timestamp": 1500508800000,
+                    "count": 13,
+                    "uniques": 2
+                }
+            ],
+            clones: [
+                {
+                    "timestamp": 1499558400000,
+                    "count": 4,
+                    "uniques": 2
+                },
+                {
+                    "timestamp": 1499644800000,
+                    "count": 3,
+                    "uniques": 1
+                },
+                {
+                    "timestamp": 1499904000000,
+                    "count": 0,
+                    "uniques": 0
+                },
+                {
+                    "timestamp": 1500508800000,
+                    "count": 5,
+                    "uniques": 3
+                }
+            ],
+        };
+    }
+    render(){
+        return (
+            <GitHubRepositoryChart name={this.audio_gallery_repo_visits.name}
+                                   views={this.audio_gallery_repo_visits.views}
+                                   clones={this.audio_gallery_repo_visits.clones}/>
+        )
+    }
+}
+
+class Repos extends React.Component{
+    render(){
+        return (
+            <div></div>
+        )
+    }
+}
+
+class Page extends React.Component{
+    render(){
+        return currentUser=="anonymousUser" ? <DemoExample/> : <Repos/>
+    }
 }
 
 
 // ========================================
 
-var audio_gallery_repo_visits = {
-    name: "hub-traffic",
-    views: [
-        {
-            "timestamp": 1499558400000,
-            "count": 3,
-            "uniques": 1
-        },
-        {
-            "timestamp": 1499644800000,
-            "count": 3,
-            "uniques": 1
-        },
-        {
-            "timestamp": 1499904000000,
-            "count": 4,
-            "uniques": 1
-        },
-        {
-            "timestamp": 1500508800000,
-            "count": 13,
-            "uniques": 2
-        }
-    ],
-    clones: [
-        {
-            "timestamp": 1499558400000,
-            "count": 4,
-            "uniques": 2
-        },
-        {
-            "timestamp": 1499644800000,
-            "count": 3,
-            "uniques": 1
-        },
-        {
-            "timestamp": 1499904000000,
-            "count": 0,
-            "uniques": 0
-        },
-        {
-            "timestamp": 1500508800000,
-            "count": 5,
-            "uniques": 3
-        }
-    ],
-};
+
 
 ReactDOM.render(
-    <GitHubRepositoryChart name={audio_gallery_repo_visits.name}
-                           views={audio_gallery_repo_visits.views}
-                           clones={audio_gallery_repo_visits.clones}/>,
+    <Page/>,
     document.getElementById('react')
 );

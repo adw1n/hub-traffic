@@ -14,7 +14,7 @@ module.exports = {
     },
     output: {
         path: __dirname,
-        filename: './src/main/resources/static/built/bundle.js'
+        filename: './src/main/resources/static/js/built/bundle.js'
     },
     module: {
         loaders: [
