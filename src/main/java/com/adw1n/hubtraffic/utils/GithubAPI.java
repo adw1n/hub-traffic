@@ -40,7 +40,7 @@ public class GithubAPI {
         String token = getToken(principal);
         try {
             for(GithubRepository repo: getUserRepositories(user, token)) {
-                getRepositoryTrafficStats(user, token, repo.getName());
+                getRepositoryTrafficStats(user, token, repo);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -66,12 +66,12 @@ public class GithubAPI {
 
 
 
-    private static void getRepositoryTrafficStats(GithubUser user, String token, String repositoryName){
-        String viewsURL = "https://api.github.com/repos/"+user.getName()+"/"+repositoryName+"/traffic/views?access_token="+token;
-        String clonesURL = "https://api.github.com/repos/"+user.getName()+"/"+repositoryName+"/traffic/clones?access_token="+token;
-        GithubRepository repo = githubRepositoryRepository.findByNameAndUser(repositoryName, user);
+    private static void getRepositoryTrafficStats(GithubUser user, String token, GithubRepository repo){
+        String viewsURL = "https://api.github.com/repos/"+user.getName()+"/"+repo.getName()+"/traffic/views?access_token="+token;
+        String clonesURL = "https://api.github.com/repos/"+user.getName()+"/"+repo.getName()+"/traffic/clones?access_token="+token;
         GithubViewsResponse viewsResponse = restTemplate.getForObject(viewsURL, GithubViewsResponse.class);
         for(GithubRepositoryViews views: viewsResponse.getViews()){
+            System.out.println(repo.getName());
             GithubRepositoryViews repoViews = githubRepositoryViewsRepository.findByRepositoryAndTimestamp(repo, views.getTimestamp());
             // TODO the data can change - eg. I checked at monday at 4am and then at 12am and the values changed
             if(repoViews==null){
@@ -94,6 +94,7 @@ public class GithubAPI {
         String name = principal.getName();
         GithubUser user = githubUserRepository.findByName(name);
         if(user==null){
+            System.out.println("user created");
             user = new GithubUser(name);
             githubUserRepository.save(user);
         }
