@@ -3,6 +3,9 @@ import ReactDOM from 'react-dom';
 
 
 
+import createPlotlyComponent from 'react-plotlyjs';
+const PlotlyComponent = createPlotlyComponent(Plotly);
+
 class GitHubRepositoryViewsChart extends React.Component{
     constructor(props){
         super(props);
@@ -11,10 +14,10 @@ class GitHubRepositoryViewsChart extends React.Component{
         };
         this.chartTitle="Visitors";
     }
-    componentDidMount() {
-        var dates=[];
-        var totalCountYAxis=[];
-        var uniqueCountYAxis=[];
+    render(){
+        let dates=[];
+        let totalCountYAxis=[];
+        let uniqueCountYAxis=[];
         this.props.values.forEach((value) => {
             let date = new Date(value.timestamp);
             dates.push((date.getMonth()+1)+"/"+date.getDate());
@@ -66,21 +69,13 @@ class GitHubRepositoryViewsChart extends React.Component{
             }
         };
         let data = [ totalCount, uniqueCount];
-        Plotly.newPlot(this.state.id, data, layout);
-    }
-    componentWillReceiveProps(nextProps){
-        this.forceUpdate();
-        console.log("componentWillReceiveProps")
-    }
-    render(){
         return (
             <div className="col-lg-6">
-                <div id={this.state.id}></div>
+                <PlotlyComponent data={data} layout={layout} />
             </div>
-        )
+        );
     }
 }
-
 class GitHubRepositoryClonesChart extends GitHubRepositoryViewsChart{
     constructor(props){
         super(props);
