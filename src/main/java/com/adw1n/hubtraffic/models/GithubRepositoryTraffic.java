@@ -7,16 +7,21 @@ import java.util.Date;
 
 @Data
 @Entity
+@Table(uniqueConstraints={@UniqueConstraint(columnNames = {"timestamp" , "repository_id"})})
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public abstract class GithubRepositoryTraffic {
-    // TODO (timestamp, repository) unique
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
     private Long id;
+    @Column(nullable = false)
     private Date timestamp;
+    @Column(nullable = false)
     private Integer count;
+    @Column(nullable = false)
     private Integer uniques;
+
     @ManyToOne
+    @JoinColumn(name="repository_id", nullable=false)
     private GithubRepository repository;
 
     public GithubRepositoryTraffic(){}
