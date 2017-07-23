@@ -4,6 +4,7 @@ import ReactDOM from 'react-dom';
 
 
 import createPlotlyComponent from 'react-plotlyjs';
+// import Plotly from 'plotly.js/dist/plotly-cartesian.js';
 const PlotlyComponent = createPlotlyComponent(Plotly);
 
 class GitHubRepositoryViewsChart extends React.Component{
@@ -13,6 +14,8 @@ class GitHubRepositoryViewsChart extends React.Component{
             id: this.props.name+"-visits"
         };
         this.chartTitle="Visitors";
+        this.uniqueLineTitle="unique visitors";
+        this.totalLineTitle="visits"
     }
     render(){
         let dates=[];
@@ -39,7 +42,7 @@ class GitHubRepositoryViewsChart extends React.Component{
                 color: 'blue',
                 width: 1
             },
-            name: "visits"
+            name: this.totalLineTitle
         };
         let uniqueCount = {
             x: dates,
@@ -53,7 +56,7 @@ class GitHubRepositoryViewsChart extends React.Component{
                 color: 'green',
                 width: 1
             },
-            name: "unique visitors",
+            name: this.uniqueLineTitle,
             yaxis: 'y2'
         };
         let layout = {
@@ -83,6 +86,8 @@ class GitHubRepositoryClonesChart extends GitHubRepositoryViewsChart{
             id: this.props.name+"-clones"
         };
         this.chartTitle="Git clones";
+        this.uniqueLineTitle="unique cloners";
+        this.totalLineTitle="clones"
     }
 
 }
@@ -194,6 +199,14 @@ class Repos extends React.Component{
                         }
                         this.forceUpdate()
                     });
+                    $.get("/api/repository/clones/"+repository.name, data=>{
+                        const repositories = this.state.repositories;
+                        for(let i=0; i<repositories.length; ++i){
+                            if(repositories[i].name == repository.name)
+                                repositories[i].clones=data;
+                        }
+                        this.forceUpdate()
+                    });
                 })
             })
         })
@@ -212,10 +225,7 @@ class Repos extends React.Component{
         });
         return (
             <div>
-                {user ?
-                    (<div>user: {user.name}</div>)
-                    : (<div></div>)
-                }
+                <div>user: {user ? user.name : "JohnDoe"}</div>
                 {repositories}
             </div>
         )

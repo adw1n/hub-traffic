@@ -1,8 +1,10 @@
 package com.adw1n.hubtraffic.controllers;
 
 import com.adw1n.hubtraffic.models.GithubRepository;
+import com.adw1n.hubtraffic.models.GithubRepositoryClones;
 import com.adw1n.hubtraffic.models.GithubRepositoryViews;
 import com.adw1n.hubtraffic.models.GithubUser;
+import com.adw1n.hubtraffic.respositories.GithubRepositoryClonesRepository;
 import com.adw1n.hubtraffic.respositories.GithubRepositoryRepository;
 import com.adw1n.hubtraffic.respositories.GithubRepositoryViewsRepository;
 import com.adw1n.hubtraffic.utils.GithubAPI;
@@ -17,14 +19,17 @@ import java.util.List;
 
 @Data
 @RestController
-public class RepoViewsController {
+public class RepoTrafficController {
     @Autowired
     private final GithubRepositoryRepository githubRepositoryRepository;
     @Autowired
     private final GithubRepositoryViewsRepository githubRepositoryViewsRepository;
+    @Autowired
+    private final GithubRepositoryClonesRepository githubRepositoryClonesRepository;
 
     @RequestMapping(value = "/api/repository/views/{repositoryName}", method = RequestMethod.GET)
-    public ResponseEntity<List<GithubRepositoryViews>> getViews(@PathVariable("repositoryName") String repositoryName, Principal principal){
+    public ResponseEntity<List<GithubRepositoryViews>> getViews(@PathVariable("repositoryName") String repositoryName,
+                                                                Principal principal){
         GithubUser user = GithubAPI.getUser(principal);
         if(user==null)
             return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
@@ -33,5 +38,18 @@ public class RepoViewsController {
             return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         List<GithubRepositoryViews> repoViews = githubRepositoryViewsRepository.findByRepository(githubRepository);
         return ResponseEntity.ok(repoViews);
+    }
+
+    @RequestMapping(value = "/api/repository/clones/{repositoryName}", method = RequestMethod.GET)
+    public ResponseEntity<List<GithubRepositoryClones>> getClones(@PathVariable("repositoryName") String repositoryName,
+                                                                 Principal principal){
+        GithubUser user = GithubAPI.getUser(principal);
+        if(user==null)
+            return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        GithubRepository githubRepository = githubRepositoryRepository.findByNameAndUser(repositoryName, user);
+        if(githubRepository==null)
+            return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        List<GithubRepositoryClones> repoClones = githubRepositoryClonesRepository.findByRepository(githubRepository);
+        return ResponseEntity.ok(repoClones);
     }
 }

@@ -8,7 +8,8 @@
     "rest": "^1.3.1",
     "stompjs": "^2.3.3",
     "webpack": "^1.12.2",
-    "react-plotlyjs": "^0.4.1"
+    "react-plotlyjs": "^0.4.1",
+    "plotly.js": "^1.29.0"
   },
   "scripts": {
     "watch": "webpack --watch -d"
