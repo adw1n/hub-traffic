@@ -68,6 +68,10 @@ class GitHubRepositoryViewsChart extends React.Component{
         let data = [ totalCount, uniqueCount];
         Plotly.newPlot(this.state.id, data, layout);
     }
+    componentWillReceiveProps(nextProps){
+        this.forceUpdate();
+        console.log("componentWillReceiveProps")
+    }
     render(){
         return (
             <div className="col-lg-6">
@@ -165,9 +169,60 @@ class DemoExample extends React.Component{
 }
 
 class Repos extends React.Component{
+    constructor(props){
+        super(props);
+        this.state={
+            user: null,
+            repositories: []
+        }
+    }
+    componentDidMount(){
+        $.get("/api/githubUser", data => {
+            this.setState({
+                user: data
+            });
+            console.log(data);
+        }).done(()=>{
+            $.get("/api/userRepositories",data =>{
+                console.log(data);
+                this.setState({
+                    repositories: data
+                })
+            }).done(()=>{
+                this.state.repositories.forEach(repository=>{
+                    $.get("/api/repository/views/"+repository.name, data=>{
+                        const repositories = this.state.repositories;
+                        // TODO use update immutability helper instead
+                        for(let i=0; i<repositories.length; ++i){
+                            if(repositories[i].name == repository.name)
+                                repositories[i].views=data;
+                        }
+                        this.forceUpdate()
+                    });
+                })
+            })
+        })
+    }
     render(){
+        const user = this.state.user;
+        console.log("user: ");
+        console.log(user);
+        console.log("repositories: ");
+        console.log(this.state.repositories);
+        const repositories = this.state.repositories.map(repo=>{
+            return <GitHubRepositoryChart key={repo.name}
+                                          name={repo.name}
+                                          views={repo.views ? repo.views : []}
+                                          clones={repo.clones ? repo.clones : []} />
+        });
         return (
-            <div></div>
+            <div>
+                {user ?
+                    (<div>user: {user.name}</div>)
+                    : (<div></div>)
+                }
+                {repositories}
+            </div>
         )
     }
 }
