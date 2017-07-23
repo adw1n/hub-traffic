@@ -7,7 +7,7 @@ import java.util.Date;
 
 @Data
 @Entity
-public class GithubRepositoryClones extends GithubRepositoryViews{
+public class GithubRepositoryClones extends GithubRepositoryTraffic{
     public GithubRepositoryClones() {
     }
 }

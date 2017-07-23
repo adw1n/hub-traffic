@@ -13,7 +13,7 @@ public class GithubRepository {
     private String name;
     @ManyToOne
     private GithubUser user;
-
+    // TODO creation date (when no clones/visitors start drawin from creation date to now)
     public GithubRepository(){}
     public GithubRepository(String name, GithubUser user){
         this.name=name;
