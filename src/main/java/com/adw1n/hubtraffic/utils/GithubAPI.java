@@ -37,10 +37,13 @@ public class GithubAPI {
 
     public static void fetchUpdates(Principal principal){
         GithubUser user = getUser(principal);
-        String token = getToken(principal);
+        fetchUpdates(user);
+    }
+
+    public static void fetchUpdates(GithubUser user){
         try {
-            for(GithubRepository repo: getUserRepositories(user, token)) {
-                getRepositoryTrafficStats(user, token, repo);
+            for(GithubRepository repo: getUserRepositories(user)) {
+                getRepositoryTrafficStats(user, repo);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -49,8 +52,9 @@ public class GithubAPI {
     }
 
 
-    private static List<GithubRepository> getUserRepositories(GithubUser user, String token) throws IOException {
-        GitHub github = GitHub.connect(user.getName(), token);
+
+    private static List<GithubRepository> getUserRepositories(GithubUser user) throws IOException {
+        GitHub github = GitHub.connect(user.getName(), user.getToken());
         List<GithubRepository> repositories = new ArrayList<>();
         for(Map.Entry<String, GHRepository> pair: github.getUser(user.getName()).getRepositories().entrySet()){
             String repoName = pair.getKey();
@@ -66,17 +70,26 @@ public class GithubAPI {
 
 
 
-    private static void getRepositoryTrafficStats(GithubUser user, String token, GithubRepository repo){
-        String viewsURL = "https://api.github.com/repos/"+user.getName()+"/"+repo.getName()+"/traffic/views?access_token="+token;
-        String clonesURL = "https://api.github.com/repos/"+user.getName()+"/"+repo.getName()+"/traffic/clones?access_token="+token;
+    private static void getRepositoryTrafficStats(GithubUser user, GithubRepository repo){
+        String viewsURL = "https://api.github.com/repos/"+user.getName()+"/"+repo.getName()+"/traffic/views?access_token="+user.getToken();
+        String clonesURL = "https://api.github.com/repos/"+user.getName()+"/"+repo.getName()+"/traffic/clones?access_token="+user.getToken();
         GithubViewsResponse viewsResponse = restTemplate.getForObject(viewsURL, GithubViewsResponse.class);
         for(GithubRepositoryViews views: viewsResponse.getViews()){
             System.out.println(repo.getName());
             GithubRepositoryViews repoViews = githubRepositoryViewsRepository.findByRepositoryAndTimestamp(repo, views.getTimestamp());
-            // TODO the data can change - eg. I checked at monday at 4am and then at 12am and the values changed
             if(repoViews==null){
                 views.setRepository(repo);
                 githubRepositoryViewsRepository.save(views);
+            }
+            else {
+                // data was updated - eg. last time we checked at 6am,
+                // now is 12am and since then 10 more people viewed the repository
+                if(!repoViews.getCount().equals(views.getCount()) ||
+                    !repoViews.getUniques().equals(views.getUniques())) {
+                    repoViews.setCount(views.getCount());
+                    repoViews.setUniques(views.getUniques());
+                    githubRepositoryViewsRepository.save(repoViews);
+                }
             }
         }
         GithubClonesResponse clonesResponse = restTemplate.getForObject(clonesURL, GithubClonesResponse.class);
@@ -86,6 +99,12 @@ public class GithubAPI {
                 clones.setRepository(repo);
                 githubRepositoryClonesRepository.save(clones);
             }
+            else if(!repoClones.getCount().equals(clones.getCount()) ||
+                    !repoClones.getUniques().equals(clones.getUniques())){
+                repoClones.setCount(clones.getCount());
+                repoClones.setUniques(clones.getUniques());
+                githubRepositoryClonesRepository.save(repoClones);
+            }
         }
     }
 
@@ -94,9 +113,10 @@ public class GithubAPI {
         String name = principal.getName();
         GithubUser user = githubUserRepository.findByName(name);
         if(user==null){
-            System.out.println("user created");
-            user = new GithubUser(name);
+            String token = getToken(principal);
+            user = new GithubUser(name, token);
             githubUserRepository.save(user);
+            System.out.println("user created");
         }
         return user;
     }

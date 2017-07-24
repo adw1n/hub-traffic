@@ -2,6 +2,7 @@ package com.adw1n.hubtraffic.scheduled;
 
 import com.adw1n.hubtraffic.models.GithubUser;
 import com.adw1n.hubtraffic.respositories.GithubUserRepository;
+import com.adw1n.hubtraffic.utils.GithubAPI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,10 +20,10 @@ public class TrafficInfoUpdater {
     private static final Logger log = LoggerFactory.getLogger(TrafficInfoUpdater.class);
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
 
-    @Scheduled(fixedRate = 6*60*60)
+    @Scheduled(fixedRate = 6*60*60*1000)
     public void updateTrafficInfo() {
         for(GithubUser user: githubUserRepository.findAll()){
-//            GithubAPI.fetchUpdates();
+            GithubAPI.fetchUpdates(user);
             log.info("Updated traffic info for user {} at {}", user.getName(), dateFormat.format(new Date()));
         }
 

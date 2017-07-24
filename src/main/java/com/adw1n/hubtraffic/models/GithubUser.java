@@ -12,10 +12,12 @@ public class GithubUser {
     private Long id;
     @Column(unique = true, nullable = false)
     private String name;
-
+    @Column(nullable = false)
+    private String token; // TODO not serializable etc.
 
     public GithubUser(){}
-    public GithubUser(String name){
+    public GithubUser(String name, String token){
         this.name=name;
+        this.token=token;
     }
 }
