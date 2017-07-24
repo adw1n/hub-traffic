@@ -4,9 +4,11 @@ import ReactDOM from 'react-dom';
 
 
 import createPlotlyComponent from 'react-plotlyjs';
-// import Plotly from 'plotly.js/dist/plotly-cartesian.js';
+// import Plotly from 'plotly.js/dist/plotly.js';
 const PlotlyComponent = createPlotlyComponent(Plotly);
-
+function getNextDayDate(date){
+    return new Date(date.setDate(date.getDate()+1))
+}
 class GitHubRepositoryViewsChart extends React.Component{
     constructor(props){
         super(props);
@@ -15,25 +17,51 @@ class GitHubRepositoryViewsChart extends React.Component{
         };
         this.chartTitle="Visitors";
         this.uniqueLineTitle="unique visitors";
-        this.totalLineTitle="visits"
+        this.totalLineTitle="visits";
+        this.getDateStr = this.getDateStr.bind(this);
+        this.getChartValues = this.getChartValues.bind(this);
     }
-    render(){
-        let dates=[];
-        let totalCountYAxis=[];
-        let uniqueCountYAxis=[];
-        this.props.values.forEach((value) => {
-            let date = new Date(value.timestamp);
-            dates.push((date.getMonth()+1)+"/"+date.getDate());
-            totalCountYAxis.push(value.count);
-            uniqueCountYAxis.push(value.uniques);
+
+    getDateStr(date){
+        let monthNo = date.getMonth()+1;
+        return ((monthNo>=10 ? monthNo : "0"+monthNo)
+        +"/"
+        +(date.getDate()>=10 ? date.getDate() : "0"+date.getDate()));
+    }
+
+
+    getChartValues(values){
+        let dates = values.map(value => new Date(value.timestamp));
+        let allValues = values.map(value => {
+            return {date: new Date(value.timestamp), count: value.count, uniques: value.uniques}
         });
 
-        //TODO add (0,0) vals between startDate and endDate
+
+        const minDate = new Date(Math.min.apply(null,dates));
+        const maxDate = new Date(Math.max.apply(null,dates));
+
+
+        let date = minDate;
+        while(date < maxDate){
+            if(!dates.find(item => item.getTime()==date.getTime())){
+                allValues.push({date: new Date(date), count: 0, uniques: 0})
+            }
+            date=getNextDayDate(date);
+        }
+        allValues.sort((val1, val2) => val1.date.getTime()-val2.date.getTime());
+        return allValues.map(value => {
+            return {date: this.getDateStr(value.date), count: value.count, uniques: value.uniques}
+        });
+    }
+
+    render(){
+        // TODO startDate is max(userRegistrationToHubTrafficDate, 14 days) //14 days cuz this is what github gives us
+        let values = this.getChartValues(this.props.values);
 
         let totalCount = {
-            x: dates,
-            y: totalCountYAxis,
-            mode: 'lines+markers',
+            x: values.map(val => val.date),
+            y: values.map(val => val.count),
+            mode: 'lines',
             marker: {
                 color: 'blue',
                 size: 8
@@ -44,10 +72,11 @@ class GitHubRepositoryViewsChart extends React.Component{
             },
             name: this.totalLineTitle
         };
+
         let uniqueCount = {
-            x: dates,
-            y: uniqueCountYAxis,
-            mode: 'lines+markers',
+            x: values.map(val => val.date),
+            y: values.map(val => val.uniques),
+            mode: 'lines',
             marker: {
                 color: 'green',
                 size: 8
@@ -63,19 +92,17 @@ class GitHubRepositoryViewsChart extends React.Component{
             title: this.chartTitle,
             yaxis: { //https://plot.ly/javascript/multiple-axes/
                 side: 'left',
-                color: 'green'
+                color: 'blue'
             },
             yaxis2: {
                 overlaying: 'y',
                 side: 'right',
-                color: 'blue'
+                color: 'green'
             }
         };
         let data = [ totalCount, uniqueCount];
         return (
-            <div className="col-lg-6">
-                <PlotlyComponent data={data} layout={layout} />
-            </div>
+            <PlotlyComponent data={data} layout={layout} />
         );
     }
 }
@@ -97,8 +124,12 @@ class GitHubRepositoryChart extends React.Component{
         return (
             <div className="row">
                 <div className="col-lg-12"><h4>{this.props.name}</h4></div>
-                <GitHubRepositoryViewsChart name={this.props.name} values={this.props.views}/>
-                <GitHubRepositoryClonesChart name={this.props.name} values={this.props.clones}/>
+                <div className="col-lg-12">
+                    <GitHubRepositoryViewsChart name={this.props.name} values={this.props.views}/>
+                </div>
+                <div className="col-lg-12">
+                    <GitHubRepositoryClonesChart name={this.props.name} values={this.props.clones}/>
+                </div>
             </div>
         )
     }
@@ -108,63 +139,60 @@ class LoginHeader extends React.Component{
 
 }
 
+
+function getRandomInt(minimum, maximum) {
+    return Math.floor(Math.random() * (maximum - minimum + 1)) + minimum;
+}
+
+function getDemoChartData(startDate, endDate, maximumViews, maximumUniqueViews, maximumClones, maximumUniqueClones){
+    console.assert(startDate.getTime()<=endDate.getTime());
+    let date = new Date(startDate);
+    let views = [];
+    let clones = [];
+    while(date <= endDate){
+        let count = getRandomInt(0, maximumViews);
+        views.push({
+            timestamp: date.getTime(),
+            count,
+            uniques: getRandomInt(count > 0 ? 1 : 0, Math.min(maximumUniqueViews, count))
+        });
+        count = getRandomInt(0, maximumClones);
+        clones.push({
+            timestamp: date.getTime(),
+            count,
+            uniques: getRandomInt(count > 0 ? 1 : 0, Math.min(maximumUniqueClones, count))
+        });
+        date = getNextDayDate(date);
+    }
+    return {views, clones};
+}
+
 class DemoExample extends React.Component{
     constructor(props){
         super(props);
-        this.audio_gallery_repo_visits = {
-            name: "hub-traffic",
-            views: [
-                {
-                    "timestamp": 1499558400000,
-                    "count": 3,
-                    "uniques": 1
-                },
-                {
-                    "timestamp": 1499644800000,
-                    "count": 3,
-                    "uniques": 1
-                },
-                {
-                    "timestamp": 1499904000000,
-                    "count": 4,
-                    "uniques": 1
-                },
-                {
-                    "timestamp": 1500508800000,
-                    "count": 13,
-                    "uniques": 2
-                }
-            ],
-            clones: [
-                {
-                    "timestamp": 1499558400000,
-                    "count": 4,
-                    "uniques": 2
-                },
-                {
-                    "timestamp": 1499644800000,
-                    "count": 3,
-                    "uniques": 1
-                },
-                {
-                    "timestamp": 1499904000000,
-                    "count": 0,
-                    "uniques": 0
-                },
-                {
-                    "timestamp": 1500508800000,
-                    "count": 5,
-                    "uniques": 3
-                }
-            ],
-        };
+        let demoRepoNames = ["dns-spoofer", "hub-traffic", "audio-gallery"];
+        this.demoRepos=demoRepoNames.map(repoName => {
+            let repo = getDemoChartData(
+                new Date("Sun Jan 01 2017 02:00:00 GMT+0200 (CEST)"),
+                new Date(),
+                100,
+                10,
+                50,
+                9
+            );
+            repo.name = repoName;
+            return repo;
+        });
     }
     render(){
+        const repos = this.demoRepos.map(repo => <GitHubRepositoryChart key={repo.name}
+                                                                        name={repo.name}
+                                                                        views={repo.views}
+                                                                        clones={repo.clones}/>
+        );
         return (
-            <GitHubRepositoryChart name={this.audio_gallery_repo_visits.name}
-                                   views={this.audio_gallery_repo_visits.views}
-                                   clones={this.audio_gallery_repo_visits.clones}/>
-        )
+            <div>{repos}</div>
+        );
     }
 }
 
