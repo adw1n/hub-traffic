@@ -33,13 +33,6 @@ public class GithubAPI {
     @Setter static RestTemplate restTemplate;
 
 
-
-
-    public static void fetchUpdates(Principal principal){
-        GithubUser user = getUser(principal);
-        fetchUpdates(user);
-    }
-
     public static void fetchUpdates(GithubUser user){
         try {
             for(GithubRepository repo: getUserRepositories(user)) {

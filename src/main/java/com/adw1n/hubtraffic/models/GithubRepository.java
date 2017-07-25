@@ -1,6 +1,8 @@
 package com.adw1n.hubtraffic.models;
 
 import lombok.Data;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 
@@ -15,6 +17,7 @@ public class GithubRepository {
     private String name;
 
     @ManyToOne
+    @OnDelete(action = OnDeleteAction.CASCADE) //https://stackoverflow.com/questions/7197181/jpa-unidirectional-many-to-one-and-cascading-delete
     @JoinColumn(name="user_id", nullable=false)
     private GithubUser user;
     // TODO creation date (when no clones/visitors start drawing from creation date to now)
