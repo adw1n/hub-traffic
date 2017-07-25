@@ -191,7 +191,11 @@ class DemoExample extends React.Component{
                                                                         clones={repo.clones}/>
         );
         return (
-            <div>{repos}</div>
+            <div>
+                <h2 className="text-center">DEMO</h2>
+                <p>user: JohnDoe</p>
+                {repos}
+            </div>
         );
     }
 }
@@ -253,7 +257,7 @@ class Repos extends React.Component{
         });
         return (
             <div>
-                <div>user: {user ? user.name : "JohnDoe"}</div>
+                <p>user: {user ? user.name : "JohnDoe"}</p>
                 {repositories}
             </div>
         )
