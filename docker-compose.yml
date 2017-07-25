@@ -1,0 +1,22 @@
+version: '2'
+services:
+  db:
+    restart: always
+    image: postgres:latest
+    container_name: hubtraffic_postgres
+    ports:
+      - '5432:5432'
+    volumes:
+      - '/opt/hub-traffic/pgdata:/var/lib/postgresql/data/'
+    environment:
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=hubtraffic
+  web:
+    restart: always
+    build: .
+    container_name: hubtraffic
+    depends_on:
+      - db
+    ports:
+      - "8080:8080"

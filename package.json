@@ -13,6 +13,7 @@
   },
   "scripts": {
     "watch": "webpack --watch -d",
+    "deploy": "webpack -p",
     "test": "jest src/main/js"
   },
   "jest": {
