@@ -48,17 +48,37 @@
     <div class="container">
         <a class="navbar-brand page-scroll" href="#page-top">hub-traffic</a>
         <div class="collapse navbar-collapse" id="navbarExample">
-            <ul class="navbar-nav ml-auto">
-                <li class="nav-item">
-                    <a class="nav-link page-scroll" href="#demo">demo</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link page-scroll" href="/login">login</a>
-                </li>
-            </ul>
         </div>
     </div>
 </nav>
+
+
+<!-- Unregister Modal -->
+<!--https://stackoverflow.com/questions/23685837/open-an-modal-window-from-navigation-bar-->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" style="z-index: 10000 !important;">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Unregister</h4>
+            </div>
+            <div class="modal-body">
+                All your data will be pernamently removed from the server. This includes:
+                <ul>
+                    <li>your private GitHub API token</li>
+                    <li>info about your repositories</li>
+                    <li>traffic stats of your repositories</li>
+                </ul>
+                There is no going back after this. Are you sure you want to remove your account?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-danger" id="unregisterButton">Unregister</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 <!-- Header -->
 <header>

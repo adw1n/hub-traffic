@@ -267,9 +267,65 @@ class Page extends React.Component{
 }
 
 
+
+class UnregisterButton extends React.Component{
+    constructor(props){
+        super(props);
+        this.unregister=this.unregister.bind(this);
+    }
+    unregister(){
+        console.log("unregister clicked");
+        $.ajax({
+            method: "DELETE",
+            url: "/api/user"
+        }).done(()=>{
+            window.location.href="/"
+        }).fail(()=>{
+            // TODO display error msg in red - ERROR: failed to unregister
+        })
+    }
+    componentDidMount(){
+        $("#unregisterButton").click(this.unregister);
+    }
+    render(){
+        return (
+            <a className="nav-link page-scroll" data-toggle="modal" data-target="#myModal" href="#myModal">
+                Unregister
+            </a>
+        )
+    }
+}
+
+class NavigationButtons extends React.Component{
+    render(){
+        return this.props.logged ? (
+            <ul className="navbar-nav ml-auto">
+                <li className="nav-item">
+                    <a className="nav-link page-scroll" href="/logout">logout</a>
+                </li>
+                <li className="nav-item">
+                    <UnregisterButton />
+                </li>
+            </ul>
+        ) : (
+            <ul className="navbar-nav ml-auto">
+                <li className="nav-item">
+                    <a className="nav-link page-scroll" href="#demo">demo</a>
+                </li>
+                <li className="nav-item">
+                    <a className="nav-link page-scroll" href="/login">login</a>
+                </li>
+            </ul>
+        )
+    }
+}
+
 // ========================================
 
-
+ReactDOM.render(
+    <NavigationButtons logged={currentUser=="anonymousUser" ? false : true}/>,
+    document.getElementById('navbarExample')
+);
 
 ReactDOM.render(
     <Page/>,
