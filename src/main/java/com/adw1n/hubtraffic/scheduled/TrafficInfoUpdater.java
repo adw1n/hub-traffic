@@ -26,6 +26,5 @@ public class TrafficInfoUpdater {
             GithubAPI.fetchUpdates(user);
             log.info("Updated traffic info for user {} at {}", user.getName(), dateFormat.format(new Date()));
         }
-
     }
 }

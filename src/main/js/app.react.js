@@ -279,8 +279,10 @@ class UnregisterButton extends React.Component{
             method: "DELETE",
             url: "/api/user"
         }).done(()=>{
-            window.location.href="/"
+            console.log("done -> logout");
+            window.location.href="/logout"
         }).fail(()=>{
+            console.log("fail");
             // TODO display error msg in red - ERROR: failed to unregister
         })
     }
