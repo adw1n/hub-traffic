@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
 <!-- HTML template taken from https://startbootstrap.com/template-overviews/freelancer/ licensed under the MIT license -->
 <head>
     <meta charset="utf-8"/>
@@ -81,7 +81,7 @@
 
 
 <!-- Header -->
-<header>
+<header sec:authorize="isAnonymous()">
     <div class="container">
         <div class="intro-text">
             <span class="skills">Track your Github traffic with hub-traffic</span>
