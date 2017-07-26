@@ -106,21 +106,25 @@
     </a>
     <div class="container">
         <div class="intro-text">
-            <span class="skills">Track your Github traffic with hub-traffic</span>
-            <hr class="star-light" style="visibility: hidden" />
-            <span class="skills">Usage stats of all your repos in one place. Daily updated info about visitors and clones.</span>
-            <hr style="visibility: hidden" />
-            <span class="skills">
+            <div class="skills row">
+                <div class="col-lg-12">
+                    Traffic stats of all your repos in one place. Daily updated info about visitors and clones.
+                </div>
+            </div>
+            <div class="skills row">
+                <div class="col-lg-12">
                     Ready to start?
-                </span>
-            <p>
-                <a href="/login">
-                    <button class="btn btn-primary btn-lg">
-                        <span>Login now with github!</span>
-                    </button>
-                </a>
-            </p>
-            Hello, <span th:text="${#authentication.name}">user</span>.
+                </div>
+            </div>
+            <div class="skills row">
+                <div class="col-lg-12">
+                    <a href="/login">
+                        <button class="btn btn-primary btn-lg">
+                            <span>Login now with github!</span>
+                        </button>
+                    </a>
+                </div>
+            </div>
         </div>
     </div>
 </header>
