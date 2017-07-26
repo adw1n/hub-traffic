@@ -8,20 +8,27 @@ import com.adw1n.hubtraffic.respositories.GithubRepositoryClonesRepository;
 import com.adw1n.hubtraffic.respositories.GithubRepositoryRepository;
 import com.adw1n.hubtraffic.respositories.GithubRepositoryViewsRepository;
 import com.adw1n.hubtraffic.respositories.GithubUserRepository;
+import com.adw1n.hubtraffic.scheduled.TrafficInfoUpdater;
 import lombok.Data;
 import lombok.Setter;
 import org.kohsuke.github.GHRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationDetails;
 
 import java.io.IOException;
 import java.security.Principal;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 
 import org.kohsuke.github.GitHub;
+import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 @Data
@@ -33,11 +40,15 @@ public class GithubAPI {
     @Setter static RestTemplate restTemplate;
 
 
+    private static final Logger log = LoggerFactory.getLogger(GithubAPI.class);
+
+    @Async
     public static void fetchUpdates(GithubUser user){
         try {
             for(GithubRepository repo: getUserRepositories(user)) {
                 getRepositoryTrafficStats(user, repo);
             }
+            log.info("Updated traffic info for user {}", user.getName());
         } catch (IOException e) {
             e.printStackTrace();
         }

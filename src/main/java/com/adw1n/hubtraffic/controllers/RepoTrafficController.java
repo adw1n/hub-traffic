@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -52,4 +53,37 @@ public class RepoTrafficController {
         List<GithubRepositoryClones> repoClones = githubRepositoryClonesRepository.findByRepository(githubRepository);
         return ResponseEntity.ok(repoClones);
     }
+
+    @Data
+    static class RepoTraffic{
+        private GithubRepository repository;
+        private List<GithubRepositoryViews> repositoryViews;
+        private List<GithubRepositoryClones> repositoryClones;
+
+        public RepoTraffic(GithubRepository repository, List<GithubRepositoryViews> repositoryViews, List<GithubRepositoryClones> repositoryClones) {
+            this.repository = repository;
+            this.repositoryViews = repositoryViews;
+            this.repositoryClones = repositoryClones;
+        }
+    }
+    @RequestMapping(value = "/api/repository/traffic", method = RequestMethod.GET)
+    public ResponseEntity<List<RepoTraffic>> getTraffic(Principal principal){
+        GithubUser user = GithubAPI.getUser(principal);
+        if(user==null)
+            return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        List<GithubRepository> repos = githubRepositoryRepository.findByUser(user);
+        if(repos.isEmpty())
+            GithubAPI.fetchUpdates(user);
+        List<RepoTraffic> ans = new ArrayList<>();
+
+        for(GithubRepository repo: repos){
+            List<GithubRepositoryViews> repositoryViews = githubRepositoryViewsRepository.findByRepository(repo);
+            List<GithubRepositoryClones> repositoryClones = githubRepositoryClonesRepository.findByRepository(repo);
+
+            RepoTraffic trafficStats = new RepoTraffic(repo, repositoryViews, repositoryClones);
+            ans.add(trafficStats);
+        }
+        return ResponseEntity.ok(ans);
+    }
+
 }
