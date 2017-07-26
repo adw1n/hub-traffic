@@ -56,14 +56,14 @@ public class RepoTrafficController {
 
     @Data
     static class RepoTraffic{
-        private GithubRepository repository;
-        private List<GithubRepositoryViews> repositoryViews;
-        private List<GithubRepositoryClones> repositoryClones;
+        private GithubRepository name;
+        private List<GithubRepositoryViews> views;
+        private List<GithubRepositoryClones> clones;
 
-        public RepoTraffic(GithubRepository repository, List<GithubRepositoryViews> repositoryViews, List<GithubRepositoryClones> repositoryClones) {
-            this.repository = repository;
-            this.repositoryViews = repositoryViews;
-            this.repositoryClones = repositoryClones;
+        public RepoTraffic(GithubRepository name, List<GithubRepositoryViews> views, List<GithubRepositoryClones> clones) {
+            this.name = name;
+            this.views = views;
+            this.clones = clones;
         }
     }
     @RequestMapping(value = "/api/repository/traffic", method = RequestMethod.GET)
@@ -72,8 +72,10 @@ public class RepoTrafficController {
         if(user==null)
             return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         List<GithubRepository> repos = githubRepositoryRepository.findByUser(user);
-        if(repos.isEmpty())
-            GithubAPI.fetchUpdates(user);
+        if(repos.isEmpty()) {
+            GithubAPI.fetchUpdates(user); // a little bit shady using that in GET controller
+            repos = githubRepositoryRepository.findByUser(user);
+        }
         List<RepoTraffic> ans = new ArrayList<>();
 
         for(GithubRepository repo: repos){

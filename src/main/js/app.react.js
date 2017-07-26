@@ -230,30 +230,10 @@ class Repos extends React.Component{
             });
             console.log(data);
         }).done(()=>{
-            $.get("/api/userRepositories",data =>{
+            $.get("/api/repository/traffic",data =>{
                 console.log(data);
                 this.setState({
                     repositories: data
-                })
-            }).done(()=>{
-                this.state.repositories.forEach(repository=>{
-                    $.get("/api/repository/views/"+repository.name, data=>{
-                        const repositories = this.state.repositories;
-                        // TODO use update immutability helper instead
-                        for(let i=0; i<repositories.length; ++i){
-                            if(repositories[i].name == repository.name)
-                                repositories[i].views=data;
-                        }
-                        this.forceUpdate()
-                    });
-                    $.get("/api/repository/clones/"+repository.name, data=>{
-                        const repositories = this.state.repositories;
-                        for(let i=0; i<repositories.length; ++i){
-                            if(repositories[i].name == repository.name)
-                                repositories[i].clones=data;
-                        }
-                        this.forceUpdate()
-                    });
                 })
             })
         })
@@ -265,8 +245,8 @@ class Repos extends React.Component{
         console.log("repositories: ");
         console.log(this.state.repositories);
         const repositories = this.state.repositories.map(repo=>{
-            return <GitHubRepositoryChart key={repo.name}
-                                          name={repo.name}
+            return <GitHubRepositoryChart key={repo.name.name}
+                                          name={repo.name.name}
                                           views={repo.views ? repo.views : []}
                                           clones={repo.clones ? repo.clones : []} />
         });
