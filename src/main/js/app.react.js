@@ -6,9 +6,15 @@ import ReactDOM from 'react-dom';
 import createPlotlyComponent from 'react-plotlyjs';
 // import Plotly from 'plotly.js/dist/plotly.js';
 const PlotlyComponent = createPlotlyComponent(Plotly);
-function getNextDayDate(date){
-    return new Date(date.setDate(date.getDate()+1))
+function getNthDayDate(date, nthDay){
+    return new Date(date.setDate(date.getDate()+nthDay))
 }
+function getNextDayDate(date){
+    return getNthDayDate(date, 1)
+}
+
+const GitHubTrafficAPIDays = 14;
+
 class GitHubRepositoryViewsChart extends React.Component{
     constructor(props){
         super(props);
@@ -37,13 +43,23 @@ class GitHubRepositoryViewsChart extends React.Component{
         });
 
 
-        const minDate = new Date(Math.min.apply(null,dates));
-        const maxDate = new Date(Math.max.apply(null,dates));
+        const minDate = dates.length ? new Date(Math.min.apply(null,dates)) : new Date();
+        const maxDate = dates.length ? new Date(Math.max.apply(null,dates)) : new Date();
 
 
-        let date = minDate;
-        while(date < maxDate){
-            if(!dates.find(item => item.getTime()==date.getTime())){
+
+        // TODO min(..., userJoinDate)
+        const startDate = new Date(
+            Math.min(
+                minDate ? minDate : new Date(),
+                getNthDayDate(new Date(), -GitHubTrafficAPIDays)
+            )
+        );
+        const endDate = new Date(Math.max(maxDate ? maxDate : new Date(), new Date()));
+
+        let date = startDate;
+        while(date < endDate){
+            if(!dates.find(item => item.toDateString()===date.toDateString())){ // test if date with same day already exists
                 allValues.push({date: new Date(date), count: 0, uniques: 0})
             }
             date=getNextDayDate(date);
@@ -55,7 +71,6 @@ class GitHubRepositoryViewsChart extends React.Component{
     }
 
     render(){
-        // TODO startDate is max(userRegistrationToHubTrafficDate, 14 days) //14 days cuz this is what github gives us
         let values = this.getChartValues(this.props.values);
 
         let totalCount = {
