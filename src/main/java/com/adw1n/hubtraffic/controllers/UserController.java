@@ -24,7 +24,6 @@ public class UserController {
     @RequestMapping(path="/api/user", method= RequestMethod.GET)
     public Principal getUser(Principal principal) {
         GithubUser user = GithubAPI.getUser(principal);
-        GithubAPI.fetchUpdates(user);
         return principal;
     }
 

@@ -7,13 +7,19 @@ import createPlotlyComponent from 'react-plotlyjs';
 // import Plotly from 'plotly.js/dist/plotly.js';
 const PlotlyComponent = createPlotlyComponent(Plotly);
 function getNthDayDate(date, nthDay){
-    return new Date(date.setDate(date.getDate()+nthDay))
+    return new Date(new Date(date).setDate(date.getDate()+nthDay))
 }
 function getNextDayDate(date){
     return getNthDayDate(date, 1)
 }
+function differenceInDays(date1, date2){
+    return Math.round(Math.abs((date1-date2))/(1000*60*60*24));
+}
 
 const GitHubTrafficAPIDays = 14;
+const SmallGraphThresholdDays = 30;
+
+
 
 class GitHubRepositoryViewsChart extends React.Component{
     constructor(props){
@@ -65,8 +71,11 @@ class GitHubRepositoryViewsChart extends React.Component{
             date=getNextDayDate(date);
         }
         allValues.sort((val1, val2) => val1.date.getTime()-val2.date.getTime());
-        return allValues.map(value => {
-            return {date: this.getDateStr(value.date), count: value.count, uniques: value.uniques}
+        return (
+        {   startDate, endDate,
+            values: allValues.map(value => {
+                return {date: this.getDateStr(value.date), count: value.count, uniques: value.uniques}
+            })
         });
     }
 
@@ -74,8 +83,8 @@ class GitHubRepositoryViewsChart extends React.Component{
         let values = this.getChartValues(this.props.values);
 
         let totalCount = {
-            x: values.map(val => val.date),
-            y: values.map(val => val.count),
+            x: values.values.map(val => val.date),
+            y: values.values.map(val => val.count),
             mode: 'lines',
             marker: {
                 color: 'blue',
@@ -89,8 +98,8 @@ class GitHubRepositoryViewsChart extends React.Component{
         };
 
         let uniqueCount = {
-            x: values.map(val => val.date),
-            y: values.map(val => val.uniques),
+            x: values.values.map(val => val.date),
+            y: values.values.map(val => val.uniques),
             mode: 'lines',
             marker: {
                 color: 'green',
@@ -116,8 +125,11 @@ class GitHubRepositoryViewsChart extends React.Component{
             }
         };
         let data = [ totalCount, uniqueCount];
+        let timePeriodInDays = differenceInDays(values.startDate, values.endDate);
         return (
-            <PlotlyComponent data={data} layout={layout} />
+            <div className={"col-sm-12 col-lg-"+(timePeriodInDays>SmallGraphThresholdDays ? 12 : 6)}>
+                <PlotlyComponent data={data} layout={layout} />
+            </div>
         );
     }
 }
@@ -139,12 +151,8 @@ class GitHubRepositoryChart extends React.Component{
         return (
             <div className="row">
                 <div className="col-lg-12"><h4>{this.props.name}</h4></div>
-                <div className="col-lg-12">
-                    <GitHubRepositoryViewsChart name={this.props.name} values={this.props.views}/>
-                </div>
-                <div className="col-lg-12">
-                    <GitHubRepositoryClonesChart name={this.props.name} values={this.props.clones}/>
-                </div>
+                <GitHubRepositoryViewsChart name={this.props.name} values={this.props.views}/>
+                <GitHubRepositoryClonesChart name={this.props.name} values={this.props.clones}/>
             </div>
         )
     }
@@ -185,18 +193,23 @@ function getDemoChartData(startDate, endDate, maximumViews, maximumUniqueViews, 
 class DemoExample extends React.Component{
     constructor(props){
         super(props);
-        let demoRepoNames = ["dns-spoofer", "hub-traffic", "audio-gallery"];
-        this.demoRepos=demoRepoNames.map(repoName => {
-            let repo = getDemoChartData(
-                new Date("Sun Jan 01 2017 02:00:00 GMT+0200 (CEST)"),
-                new Date(),
+        const endDate = new Date();
+        let demoRepoNames = [
+            {name: "dns-spoofer", startDate: new Date("Sun Jan 01 2017 02:00:00 GMT+0200 (CEST)")},
+            {name: "hub-traffic", startDate: getNthDayDate(endDate, -20)},
+            {name: "audio-gallery", startDate: getNthDayDate(endDate, -40)}
+        ];
+        this.demoRepos=demoRepoNames.map(repo => {
+            let repoData = getDemoChartData(
+                repo.startDate,
+                endDate ? endDate : console.assert("fucked up"),
                 100,
                 10,
                 50,
                 9
             );
-            repo.name = repoName;
-            return repo;
+            repoData.name = repo.name;
+            return repoData;
         });
     }
     render(){
@@ -252,8 +265,13 @@ class Repos extends React.Component{
         });
         return (
             <div>
-                <p>user: {user ? user.name : "JohnDoe"}</p>
-                {repositories}
+                <p>user: {user ? user.name : ""}</p>
+                {repositories.length ? repositories : (
+                    <div>
+                        <i className="fa fa-refresh fa-spin fa-3x fa-fw" style={{position: "relative", left: "50%"}}></i>
+                        <span className="sr-only">Loading...</span>
+                    </div>
+                )}
             </div>
         )
     }
