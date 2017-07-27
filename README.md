@@ -1,6 +1,6 @@
 WORK IN PROGRESS
 
-TODO link_to_the_app_here
+<https://hubtraffic.adw1n.com/>
 
 ### Motivation
 Under the `Insights->Graphs->Traffic` on your repo page, GitHub offers charts that present the traffic statistics (views/clones numbers) for your repo. Unfortunately only stats from the last 14 days are accessible. 
@@ -19,6 +19,14 @@ git clone https://github.com/adw1n/hub-traffic
 cd hub-traffic
 # put in src/main/resources/application.yml your Client ID and Client Secret obtained during step 1)
 sudo mkdir -p /opt/hub-traffic/pgdata
-docker-compose build .
-docker-compose up
+sudo docker-compose build .
+sudo docker-compose up -d
+```
+App should be now accessible at <http://localhost:8080>.
+
+I created a sample nginx config file [config/hubtraffic.example.com.nginx](config/hubtraffic.example.com.nginx) that you can put in `/etc/nginx/sites-available` and then symlink to if from `/etc/nginx/sites-enabled`. Obviously you need to change the domain name both in the file name and in the file itself.
+```bash
+sudo cp config/hubtraffic.example.com.nginx /etc/nginx/sites-available
+sudo ln -s /etc/nginx/sites-available/hubtraffic.example.com.nginx  /etc/nginx/sites-enabled/hubtraffic.example.com
+sudo service nginx reload
 ```
