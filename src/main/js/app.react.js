@@ -1,11 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-
-
-import createPlotlyComponent from 'react-plotlyjs';
 // import Plotly from 'plotly.js/dist/plotly.js';
-const PlotlyComponent = createPlotlyComponent(Plotly);
+
+
+
 function getNthDayDate(date, nthDay){
     return new Date(new Date(date).setDate(date.getDate()+nthDay))
 }
@@ -76,11 +75,25 @@ class GitHubRepositoryViewsChart extends React.Component{
             })
         });
     }
+    componentDidMount(){
+        // https://plot.ly/javascript/responsive-fluid-layout/
+        let gd3 = Plotly.d3.select('#'+this.state.id)
+            .append('div')
+            .style({
+                width: '100%'
+            });
+        let gd = gd3.node();
+        Plotly.plot(gd, this.data, this.layout);
+        // TODO take care of removing this callback when component is unmounted (not needed so far)
+        $(window).resize(()=>Plotly.Plots.resize(gd));
+    }
 
+    // after changes to this.props.values stuff will break - no more updates (but that does not concern me, since
+    // my app won't need to redraw the charts
     render(){
-        let values = this.getChartValues(this.props.values);
+        const values = this.getChartValues(this.props.values);
 
-        let totalCount = {
+        const totalCount = {
             x: values.values.map(val => val.date),
             y: values.values.map(val => val.count),
             mode: 'lines',
@@ -95,7 +108,7 @@ class GitHubRepositoryViewsChart extends React.Component{
             name: this.totalLineTitle
         };
 
-        let uniqueCount = {
+        const uniqueCount = {
             x: values.values.map(val => val.date),
             y: values.values.map(val => val.uniques),
             mode: 'lines',
@@ -110,7 +123,7 @@ class GitHubRepositoryViewsChart extends React.Component{
             name: this.uniqueLineTitle,
             yaxis: 'y2'
         };
-        let layout = {
+        this.layout = {
             title: this.chartTitle,
             yaxis: { //https://plot.ly/javascript/multiple-axes/
                 side: 'left',
@@ -122,11 +135,10 @@ class GitHubRepositoryViewsChart extends React.Component{
                 color: 'green'
             }
         };
-        let data = [ totalCount, uniqueCount];
-        let timePeriodInDays = differenceInDays(values.startDate, values.endDate);
+        this.data = [ totalCount, uniqueCount];
+        const timePeriodInDays = differenceInDays(values.startDate, values.endDate);
         return (
-            <div className={"col-sm-12 col-lg-"+(timePeriodInDays>SmallGraphThresholdDays ? 12 : 6)}>
-                <PlotlyComponent data={data} layout={layout} />
+            <div className={"col-sm-12 col-lg-"+(timePeriodInDays>SmallGraphThresholdDays ? 12 : 6)} id={this.state.id}>
             </div>
         );
     }
