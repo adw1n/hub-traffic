@@ -137,6 +137,15 @@ class GitHubRepositoryViewsChart extends React.Component{
                 tickformat: "d"
             }
         };
+        // this fixes case when repo had no visitors / clones
+        // in that case chart is being drawn icorrectly with Y axis <-1,1>
+        if(Math.max(...totalCount.y)<=0){
+            console.log("applied");
+            this.layout.yaxis.range = [0,1];
+        }
+        if(Math.max(...uniqueCount.y)<=0){
+            this.layout.yaxis2.range = [0,1];
+        }
         this.data = [ totalCount, uniqueCount];
         const timePeriodInDays = differenceInDays(values.startDate, values.endDate);
         return (
