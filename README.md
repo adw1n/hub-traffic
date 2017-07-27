@@ -11,8 +11,8 @@ Whoever hosts this app **has access to all of the users' GitHub API tokens** and
 Because of that **I recommend self-hosting this app for yourself**. For deployment instructions see the deployment section.
 
 ### Deployment
-1. register new GitHub OAuth app on [https://github.com/settings/applications/new]()
-relevant docs: [https://developer.github.com/apps/building-integrations/setting-up-and-registering-oauth-apps/registering-oauth-apps/]()
+1. register new GitHub OAuth app on <https://github.com/settings/applications/new>  
+relevant docs: <https://developer.github.com/apps/building-integrations/setting-up-and-registering-oauth-apps/registering-oauth-apps/>
 2.
 ```bash
 git clone https://github.com/adw1n/hub-traffic
