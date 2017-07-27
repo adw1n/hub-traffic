@@ -243,7 +243,8 @@ class Repos extends React.Component{
         super(props);
         this.state={
             user: null,
-            repositories: []
+            repositories: [],
+            error: false
         }
     }
     componentDidMount(){
@@ -258,11 +259,16 @@ class Repos extends React.Component{
                 this.setState({
                     repositories: data
                 })
+            }).fail(() => {
+                this.setState({
+                    error: true
+                })
             })
         })
     }
     render(){
         const user = this.state.user;
+        const error = this.state.error;
         console.log("user: ");
         console.log(user);
         console.log("repositories: ");
@@ -276,7 +282,7 @@ class Repos extends React.Component{
         return (
             <div>
                 <p>user: {user ? user.name : ""}</p>
-                {repositories.length ? repositories : (
+                {repositories.length ? repositories : ( error ? "Error: failed to fetch data from the server." :
                     <div>
                         <i className="fa fa-refresh fa-spin fa-3x fa-fw" style={{position: "relative", left: "50%"}}></i>
                         <span className="sr-only">Loading...</span>
