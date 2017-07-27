@@ -89,7 +89,7 @@ class GitHubRepositoryViewsChart extends React.Component{
     }
 
     // after changes to this.props.values stuff will break - no more updates (but that does not concern me, since
-    // my app won't need to redraw the charts
+    // my app won't need to redraw the charts)
     render(){
         const values = this.getChartValues(this.props.values);
 
@@ -127,12 +127,14 @@ class GitHubRepositoryViewsChart extends React.Component{
             title: this.chartTitle,
             yaxis: { //https://plot.ly/javascript/multiple-axes/
                 side: 'left',
-                color: 'blue'
+                color: 'blue',
+                tickformat: "d" // only integer numbers
             },
             yaxis2: {
                 overlaying: 'y',
                 side: 'right',
-                color: 'green'
+                color: 'green',
+                tickformat: "d"
             }
         };
         this.data = [ totalCount, uniqueCount];
