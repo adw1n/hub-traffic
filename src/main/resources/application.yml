@@ -4,7 +4,7 @@ security:
       clientId: YOUR_CLIENTID
       clientSecret: YOUR_SECRET
       accessTokenUri: https://github.com/login/oauth/access_token
-      userAuthorizationUri: https://github.com/login/oauth/authorize?scope=read:user  repo
+      userAuthorizationUri: https://github.com/login/oauth/authorize?scope=public_repo
       clientAuthenticationScheme: form
     resource:
       userInfoUri: https://api.github.com/user
