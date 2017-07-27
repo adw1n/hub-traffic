@@ -53,8 +53,6 @@ class GitHubRepositoryViewsChart extends React.Component{
         const maxDate = dates.length ? new Date(Math.max.apply(null,dates)) : new Date();
 
 
-
-        // TODO min(..., userJoinDate)
         const startDate = new Date(
             Math.min(
                 minDate ? minDate : new Date(),
