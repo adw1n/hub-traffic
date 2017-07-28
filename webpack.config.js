@@ -1,17 +1,11 @@
-var path = require('path');
-
-var node_dir = __dirname + '/node_modules';
+const webpack = require('webpack');
+const path = require('path');
 
 module.exports = {
     entry: './src/main/js/app.react.js',
     devtool: 'sourcemaps',
     cache: true,
     debug: true,
-    resolve: {
-        alias: {
-            'stompjs': node_dir + '/stompjs/lib/stomp.js',
-        }
-    },
     output: {
         path: __dirname,
         filename: './src/main/resources/static/js/built/bundle.js'
@@ -28,5 +22,19 @@ module.exports = {
                 }
             }
         ]
-    }
+    },
+    plugins: (() => {
+        // props to https://gist.github.com/rafrex/f568711b86a09c8e4eae8fbe1eb7aeab/ for the idea
+        if (process.argv.indexOf('-p') !== -1) {
+            return [
+                new webpack.DefinePlugin({
+                    'process.env': {
+                        NODE_ENV: JSON.stringify('production'),
+                    },
+                }),
+                new webpack.optimize.UglifyJsPlugin(),
+            ];
+        }
+        return [];
+    })()
 };

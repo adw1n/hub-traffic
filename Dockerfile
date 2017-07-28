@@ -13,9 +13,10 @@ RUN mkdir /root/hub-traffic
 ADD . /root/hub-traffic
 WORKDIR /root/hub-traffic
 RUN sed -i 's/jdbc:postgresql:\/\/localhost/jdbc:postgresql:\/\/db/g' src/main/resources/application.properties
+RUN sed -i 's/debug: true/debug: false/g' webpack.config.js
 RUN yarn install
 RUN yarn deploy
-RUN cd src/main/resources/static/js/ && yarn add startbootstrap-freelancer
+RUN cd src/main/resources/static/js/ && yarn add startbootstrap-freelancer@4.0.0-alpha
 RUN ./mvnw package -DskipTests
 
 ENTRYPOINT ["java", "-jar", "/root/hub-traffic/target/hub-traffic-0.0.1-SNAPSHOT.jar"]
