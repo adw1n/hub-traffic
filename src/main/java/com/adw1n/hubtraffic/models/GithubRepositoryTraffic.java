@@ -1,6 +1,7 @@
 package com.adw1n.hubtraffic.models;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
@@ -8,6 +9,7 @@ import javax.persistence.*;
 import java.util.Date;
 
 @Data
+@NoArgsConstructor
 @Entity
 //@Table(uniqueConstraints={@UniqueConstraint(columnNames = {"timestamp" , "repository_id"})})
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
@@ -31,7 +33,7 @@ public abstract class GithubRepositoryTraffic {
 //    @JoinColumn(name="repository_id", nullable=false)
 //    private GithubRepository repository;
 
-    public GithubRepositoryTraffic(){}
+
     public GithubRepositoryTraffic(Date timestamp, Integer count, Integer uniques) {
         this.timestamp = timestamp;
         this.count = count;
