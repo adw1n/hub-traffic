@@ -24,6 +24,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -118,5 +119,25 @@ public class UserControllerTest {
         GithubUser createdUser = users.get(0);
         Assert.assertEquals(user.getName(), createdUser.getName());
         Assert.assertEquals(user.getToken(), createdUser.getToken());
+    }
+
+    @Test
+    public void testApiUserRepositories() throws Exception{
+        githubUserRepository.save(user);
+        String[] repoNames = new String[]{"repo-1", "repo-2"};
+        ArrayList<GithubRepository> repos = new ArrayList<>();
+        for(String repoName: repoNames){
+            GithubRepository repo = new GithubRepository(repoName, user);
+            githubRepositoryRepository.save(repo);
+            repos.add(repo);
+            githubRepositoryViewsRepository.save(new GithubRepositoryViews(new Date(), 5, 3, repo));
+            githubRepositoryClonesRepository.save(new GithubRepositoryClones(new Date(), 4, 2, repo));
+        }
+
+        this.mvc.perform(
+                get("/api/userRepositories").principal(WithOAuth2AuthenticationSecurityContextFactory.getPrincipal(user)))
+                .andDo(print()).andExpect(status().isOk())
+                .andExpect(content().string(mapper.writeValueAsString(repos)));
+
     }
 }
