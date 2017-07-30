@@ -16,6 +16,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
+import org.powermock.reflect.Whitebox;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -77,7 +78,7 @@ public class GithubAPITest {
 
 
         GithubAPI.setRestTemplate(mock);
-        GithubAPI.getRepositoryTrafficStats(user, repo);
+        Whitebox.invokeMethod(GithubAPI.class, "getRepositoryTrafficStats", user, repo);
         Assert.assertEquals(3,Iterables.size(githubRepositoryViewsRepository.findAll()));
         Assert.assertEquals(2,Iterables.size(githubRepositoryClonesRepository.findAll()));
     }
@@ -98,7 +99,7 @@ public class GithubAPITest {
     @Test
     public void testGetToken() throws Exception{
         Principal principal = WithOAuth2AuthenticationSecurityContextFactory.getPrincipal(user);
-        String token = GithubAPI.getToken(principal);
+        String token = Whitebox.invokeMethod(GithubAPI.class, "getToken", principal);
         Assert.assertEquals(user.getToken(), token);
     }
 }

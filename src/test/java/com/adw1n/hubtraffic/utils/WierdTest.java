@@ -23,6 +23,7 @@ import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.modules.junit4.PowerMockRunnerDelegate;
+import org.powermock.reflect.Whitebox;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -75,8 +76,7 @@ public class WierdTest {
         }
         Mockito.when(ghUser.getRepositories()).thenReturn(repositories);
 
-
-        List<GithubRepository> userRepos = GithubAPI.getUserRepositories(user);
+        List<GithubRepository> userRepos = Whitebox.invokeMethod(GithubAPI.class,"getUserRepositories", user);
         Assert.assertEquals(expected.size(), userRepos.size());
         Assert.assertEquals(expected.size(), Iterables.size(githubRepositoryRepository.findAll()));
         for(GithubRepository expectedRepo: expected){

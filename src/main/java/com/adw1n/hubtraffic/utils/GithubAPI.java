@@ -53,7 +53,7 @@ public class GithubAPI {
 
 
 
-    public static List<GithubRepository> getUserRepositories(GithubUser user) throws IOException {
+    private static List<GithubRepository> getUserRepositories(GithubUser user) throws IOException {
         GitHub github = GitHub.connect(user.getName(), user.getToken());
         List<GithubRepository> repositories = new ArrayList<>();
         for(Map.Entry<String, GHRepository> pair: github.getUser(user.getName()).getRepositories().entrySet()){
@@ -70,7 +70,7 @@ public class GithubAPI {
 
 
 
-    public static void getRepositoryTrafficStats(GithubUser user, GithubRepository repo){
+    private static void getRepositoryTrafficStats(GithubUser user, GithubRepository repo){
         String viewsURL = "https://api.github.com/repos/"+user.getName()+"/"+repo.getName()+"/traffic/views?access_token="+user.getToken();
         String clonesURL = "https://api.github.com/repos/"+user.getName()+"/"+repo.getName()+"/traffic/clones?access_token="+user.getToken();
         GithubViewsResponse viewsResponse = restTemplate.getForObject(viewsURL, GithubViewsResponse.class);
@@ -122,7 +122,7 @@ public class GithubAPI {
     }
 
 
-    public static String getToken(Principal principal){
+    private static String getToken(Principal principal){
         String token = ((OAuth2AuthenticationDetails) ((OAuth2Authentication) principal).getDetails()).getTokenValue();
         return token;
     }
