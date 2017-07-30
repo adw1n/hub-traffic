@@ -8,7 +8,6 @@ import com.adw1n.hubtraffic.respositories.GithubRepositoryClonesRepository;
 import com.adw1n.hubtraffic.respositories.GithubRepositoryRepository;
 import com.adw1n.hubtraffic.respositories.GithubRepositoryViewsRepository;
 import com.adw1n.hubtraffic.respositories.GithubUserRepository;
-import com.adw1n.hubtraffic.scheduled.TrafficInfoUpdater;
 import lombok.Data;
 import lombok.Setter;
 import org.kohsuke.github.GHRepository;
@@ -20,15 +19,12 @@ import org.springframework.security.oauth2.provider.authentication.OAuth2Authent
 
 import java.io.IOException;
 import java.security.Principal;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 
 import org.kohsuke.github.GitHub;
-import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 @Data
@@ -50,7 +46,7 @@ public class GithubAPI {
             }
             log.info("Updated traffic info for user {}", user.getName());
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
         }
 
     }
@@ -126,7 +122,7 @@ public class GithubAPI {
     }
 
 
-    public static String getToken(Principal principal){
+    private static String getToken(Principal principal){
         String token = ((OAuth2AuthenticationDetails) ((OAuth2Authentication) principal).getDetails()).getTokenValue();
         return token;
     }

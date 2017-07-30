@@ -10,6 +10,7 @@ import com.adw1n.hubtraffic.respositories.GithubRepositoryViewsRepository;
 import com.adw1n.hubtraffic.utils.GithubAPI;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -28,6 +29,7 @@ public class RepoTrafficController {
     @Autowired
     private final GithubRepositoryClonesRepository githubRepositoryClonesRepository;
 
+    @ConditionalOnExpression("${RepoTrafficController.getViews.enabled:false}")
     @RequestMapping(value = "/api/repository/views/{repositoryName}", method = RequestMethod.GET)
     public ResponseEntity<List<GithubRepositoryViews>> getViews(@PathVariable("repositoryName") String repositoryName,
                                                                 Principal principal){
@@ -41,6 +43,7 @@ public class RepoTrafficController {
         return ResponseEntity.ok(repoViews);
     }
 
+    @ConditionalOnExpression("${RepoTrafficController.getClones.enabled:false}")
     @RequestMapping(value = "/api/repository/clones/{repositoryName}", method = RequestMethod.GET)
     public ResponseEntity<List<GithubRepositoryClones>> getClones(@PathVariable("repositoryName") String repositoryName,
                                                                  Principal principal){

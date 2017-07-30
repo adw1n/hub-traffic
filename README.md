@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/adw1n/hub-traffic.svg?branch=master)](https://travis-ci.org/adw1n/hub-traffic)
+
 WORK IN PROGRESS
 
 <https://hubtraffic.adw1n.com/>

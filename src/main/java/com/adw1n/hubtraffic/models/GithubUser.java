@@ -2,6 +2,7 @@ package com.adw1n.hubtraffic.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -9,6 +10,7 @@ import javax.persistence.*;
 import java.util.Date;
 
 @Data
+@NoArgsConstructor
 @Entity
 public class GithubUser {
     @Id
@@ -21,14 +23,13 @@ public class GithubUser {
 
     @Column(nullable = false)
     @JsonIgnore
-    private String token; // TODO not serializable etc.
+    private String token;
 
     @CreationTimestamp
     @Column(nullable = false)
     @JsonIgnore
     private Date joinDate;
 
-    public GithubUser(){}
     public GithubUser(String name, String token){
         this.name=name;
         this.token=token;
