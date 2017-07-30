@@ -1,0 +1,15 @@
+language: java
+jdk:
+- oraclejdk8
+services:
+- postgresql
+
+before_install:
+- psql -c 'create database "hubtraffic-test";' -U postgres
+
+install:
+- yarn install
+
+script:
+- ./mvnw verify -DXms1024m -DXmx2048m -Dspring.profiles.active=ci
+- yarn test
