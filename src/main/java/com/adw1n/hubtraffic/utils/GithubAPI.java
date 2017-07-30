@@ -53,7 +53,7 @@ public class GithubAPI {
 
 
 
-    private static List<GithubRepository> getUserRepositories(GithubUser user) throws IOException {
+    public static List<GithubRepository> getUserRepositories(GithubUser user) throws IOException {
         GitHub github = GitHub.connect(user.getName(), user.getToken());
         List<GithubRepository> repositories = new ArrayList<>();
         for(Map.Entry<String, GHRepository> pair: github.getUser(user.getName()).getRepositories().entrySet()){

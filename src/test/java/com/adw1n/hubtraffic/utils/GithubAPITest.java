@@ -1,6 +1,7 @@
 package com.adw1n.hubtraffic.utils;
 
 
+import com.adw1n.hubtraffic.config.WithOAuth2AuthenticationSecurityContextFactory;
 import com.adw1n.hubtraffic.models.GithubRepository;
 import com.adw1n.hubtraffic.models.GithubRepositoryClones;
 import com.adw1n.hubtraffic.models.GithubRepositoryViews;
@@ -20,6 +21,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.RestTemplate;
 import javax.transaction.Transactional;
+import java.security.Principal;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -82,7 +84,21 @@ public class GithubAPITest {
 
 
     @Test
-    public void testGetUserRepositories(){
+    public void testGetUserRepositories()  throws Exception{
 
+    }
+
+    @Test
+    public void testGetUser() throws Exception{
+        Principal principal = WithOAuth2AuthenticationSecurityContextFactory.getPrincipal(user);
+        GithubUser retrievedUser = GithubAPI.getUser(principal);
+        Assert.assertEquals(user, retrievedUser);
+    }
+
+    @Test
+    public void testGetToken() throws Exception{
+        Principal principal = WithOAuth2AuthenticationSecurityContextFactory.getPrincipal(user);
+        String token = GithubAPI.getToken(principal);
+        Assert.assertEquals(user.getToken(), token);
     }
 }
