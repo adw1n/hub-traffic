@@ -5,12 +5,11 @@ services:
 - postgresql
 
 before_install:
-- sed -i 's/spring.datasource.password=password//g' src/main/resources/application.properties
-# - psql -c 'create database hubtraffic;' -U postgres
+- psql -c 'create database "hubtraffic-test";' -U postgres
 
 install:
 - yarn install
 
 script:
-- ./mvnw verify
+- ./mvnw verify -Dspring.profiles.active=ci
 - yarn test
