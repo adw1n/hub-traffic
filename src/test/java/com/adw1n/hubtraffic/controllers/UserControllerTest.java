@@ -1,6 +1,5 @@
 package com.adw1n.hubtraffic.controllers;
 
-import com.adw1n.hubtraffic.config.WithOAuth2Authentication;
 import com.adw1n.hubtraffic.config.WithOAuth2AuthenticationSecurityContextFactory;
 import com.adw1n.hubtraffic.models.GithubRepository;
 import com.adw1n.hubtraffic.models.GithubRepositoryClones;
@@ -55,7 +54,7 @@ public class UserControllerTest {
     private WebApplicationContext webapp;
 
 
-    GithubUser user;
+    private GithubUser user;
     final ObjectMapper mapper = new ObjectMapper();
 
 

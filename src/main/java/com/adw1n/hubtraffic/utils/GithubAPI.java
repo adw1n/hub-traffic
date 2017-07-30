@@ -8,7 +8,6 @@ import com.adw1n.hubtraffic.respositories.GithubRepositoryClonesRepository;
 import com.adw1n.hubtraffic.respositories.GithubRepositoryRepository;
 import com.adw1n.hubtraffic.respositories.GithubRepositoryViewsRepository;
 import com.adw1n.hubtraffic.respositories.GithubUserRepository;
-import com.adw1n.hubtraffic.scheduled.TrafficInfoUpdater;
 import lombok.Data;
 import lombok.Setter;
 import org.kohsuke.github.GHRepository;
@@ -20,15 +19,12 @@ import org.springframework.security.oauth2.provider.authentication.OAuth2Authent
 
 import java.io.IOException;
 import java.security.Principal;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 
 import org.kohsuke.github.GitHub;
-import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 @Data
@@ -74,7 +70,7 @@ public class GithubAPI {
 
 
 
-    private static void getRepositoryTrafficStats(GithubUser user, GithubRepository repo){
+    public static void getRepositoryTrafficStats(GithubUser user, GithubRepository repo){
         String viewsURL = "https://api.github.com/repos/"+user.getName()+"/"+repo.getName()+"/traffic/views?access_token="+user.getToken();
         String clonesURL = "https://api.github.com/repos/"+user.getName()+"/"+repo.getName()+"/traffic/clones?access_token="+user.getToken();
         GithubViewsResponse viewsResponse = restTemplate.getForObject(viewsURL, GithubViewsResponse.class);
