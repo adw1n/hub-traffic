@@ -11,5 +11,5 @@ install:
 - yarn install
 
 script:
-- ./mvnw verify -Dspring.profiles.active=ci -e -X
+- ./mvnw verify -Dspring.profiles.active=ci -e
 - yarn test
