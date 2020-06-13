@@ -2,7 +2,7 @@
   "name": "hub-traffic",
   "dependencies": {
     "imports-loader": "^0.7.1",
-    "jquery": "^3.2.1",
+    "jquery": "^3.5.0",
     "react": "^15.3.2",
     "react-dom": "^15.3.2",
     "webpack": "^1.12.2",
