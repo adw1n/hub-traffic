@@ -216,14 +216,14 @@ class DemoExample extends React.Component{
         super(props);
         const endDate = new Date();
         let demoRepoNames = [
-            {name: "repo-1", startDate: new Date("Sun Jan 01 2017 02:00:00 GMT+0200 (CEST)")},
+            {name: "repo-1", startDate: new Date("Wed Jan 01 2020 02:00:00 GMT+0200 (CEST)")},
             {name: "repo-2", startDate: getNthDayDate(endDate, -20)},
             {name: "repo-3", startDate: getNthDayDate(endDate, -40)}
         ];
         this.demoRepos=demoRepoNames.map(repo => {
             let repoData = getDemoChartData(
                 repo.startDate,
-                endDate ? endDate : console.assert("fucked up"),
+                endDate ? endDate : console.assert("messed up"),
                 100,
                 10,
                 50,

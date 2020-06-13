@@ -16,7 +16,10 @@ RUN sed -i 's/jdbc:postgresql:\/\/localhost/jdbc:postgresql:\/\/db/g' src/main/r
 RUN sed -i 's/debug: true/debug: false/g' webpack.config.js
 RUN yarn install
 RUN yarn deploy
-RUN cd src/main/resources/static/js/ && yarn add startbootstrap-freelancer@4.0.0-alpha
+RUN cd src/main/resources/static/js/ \
+    && yarn add startbootstrap-freelancer@4.0.0-alpha \
+    && mkdir -p node_modules/ \
+    && mv /root/hub-traffic/node_modules/startbootstrap-freelancer node_modules/
 RUN ./mvnw package -DskipTests
 
 ENTRYPOINT ["java", "-jar", "/root/hub-traffic/target/hub-traffic-0.0.1-SNAPSHOT.jar"]
