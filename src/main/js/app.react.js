@@ -347,7 +347,7 @@ class NavigationButtons extends React.Component{
         return this.props.logged ? (
             <ul className="navbar-nav ml-auto">
                 <li className="nav-item">
-                    <a className="nav-link page-scroll" href="/logout">logout</a>
+                    <a className="nav-link page-scroll" href="/logout">log out</a>
                 </li>
                 <li className="nav-item">
                     <UnregisterButton />
@@ -359,7 +359,7 @@ class NavigationButtons extends React.Component{
                     <a className="nav-link page-scroll" href="#demo">demo</a>
                 </li>
                 <li className="nav-item">
-                    <a className="nav-link page-scroll" href="/login">login</a>
+                    <a className="nav-link page-scroll" href="/login">log in</a>
                 </li>
             </ul>
         )
