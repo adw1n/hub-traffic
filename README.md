@@ -1,6 +1,9 @@
 [![Build Status](https://travis-ci.org/adw1n/hub-traffic.svg?branch=master)](https://travis-ci.org/adw1n/hub-traffic)
 
-<https://hubtraffic.adw1n.com/>
+Demo page view:
+![demo](docs/hub_traffic_demo_page.png)
+Logged in view:
+![demo](docs/hub_traffic_logged_in_view.png)
 
 ### Motivation
 Under the `Insights->Graphs->Traffic` on your repo page, GitHub offers charts that present the traffic statistics (views/clones numbers) for your repo. Unfortunately only stats from the last 14 days are accessible. 
